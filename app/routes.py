@@ -1,9 +1,8 @@
 from flask import Blueprint, render_template, url_for, flash, redirect, request
 from flask_login import login_user, current_user, logout_user, login_required
 from app import db, bcrypt
-from app.forms import RegistrationForm, LoginForm
+from app.forms import RegistrationForm, LoginForm, UpdateAccountForm
 from app.models import User
-from flask import request
 
 main = Blueprint('main', __name__)
 
@@ -41,10 +40,25 @@ def login():
             flash('Вход не выполнен. Пожалуйста, проверьте логин и пароль.', 'danger')
     return render_template('login.html', title='Вход', form=form)
 
-@main.route("/profile")
+@main.route("/profile", methods=['GET', 'POST'])
 @login_required
 def profile():
-    return render_template('profile.html', title='Профиль')
+    form = UpdateAccountForm()
+    if form.validate_on_submit():
+        if form.username.data != current_user.username:
+            current_user.username = form.username.data
+        if form.email.data != current_user.email:
+            current_user.email = form.email.data
+        if form.password.data:
+            hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+            current_user.password = hashed_password
+        db.session.commit()
+        flash('Ваш аккаунт был обновлен!', 'success')
+        return redirect(url_for('main.profile'))
+    elif request.method == 'GET':
+        form.username.data = current_user.username
+        form.email.data = current_user.email
+    return render_template('profile.html', title='Профиль', form=form)
 
 @main.route("/logout")
 def logout():
