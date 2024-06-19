@@ -1,9 +1,9 @@
 {% extends "base.html" %}
-{% block title %}Account{% endblock %}
+{% block title %}Аккаунт{% endblock %}
 {% block content %}
     <div class="row justify-content-center">
         <div class="col-md-6">
-            <h2>Account</h2>
+            <h2>Аккаунт</h2>
             <form method="POST" action="">
                 {{ form.hidden_tag() }}
                 <div class="form-group">
@@ -18,8 +18,9 @@
                     {{ form.password.label(class="form-label") }}
                     {{ form.password(class="form-control") }}
                 </div>
-                <button type="submit" class="btn btn-primary">Update</button>
+                <button type="submit" class="btn btn-primary">Обновить</button>
             </form>
         </div>
     </div>
 {% endblock %}
+
