@@ -4,11 +4,13 @@ from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_wtf.csrf import CSRFProtect
 from config import Config
+from flask_migrate import Migrate
 
 db = SQLAlchemy()
 bcrypt = Bcrypt()
 login_manager = LoginManager()
 csrf = CSRFProtect()
+
 
 login_manager.login_view = 'login'
 login_manager.login_message_category = 'info'
@@ -24,6 +26,8 @@ def create_app():
 
     from app.routes import main
     app.register_blueprint(main)
+
+    migrate = Migrate(app, db)
 
     return app
 
